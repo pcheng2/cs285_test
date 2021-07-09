@@ -1,10 +1,8 @@
 import os
 import time
 
-import sys
-sys.path.append(os.getcwd())
-from infrastructure.rl_trainer import RL_Trainer
-from agents.mb_agent import MBAgent
+from cs285.infrastructure.rl_trainer import RL_Trainer
+from cs285.agents.mb_agent import MBAgent
 
 
 class MB_Trainer(object):
@@ -42,6 +40,7 @@ class MB_Trainer(object):
         ################
 
         self.rl_trainer = RL_Trainer(self.params)
+
 
     def run_training_loop(self):
 

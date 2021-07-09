@@ -1,12 +1,9 @@
 from torch import nn
 import torch
-import os
-import sys
-sys.path.append(os.getcwd())
 from torch import optim
-from models.base_model import BaseModel
-from infrastructure.utils import normalize, unnormalize
-from infrastructure import pytorch_util as ptu
+from cs285.models.base_model import BaseModel
+from cs285.infrastructure.utils import normalize, unnormalize
+from cs285.infrastructure import pytorch_util as ptu
 
 
 class FFModel(nn.Module, BaseModel):
@@ -84,8 +81,10 @@ class FFModel(nn.Module, BaseModel):
         obs_normalized = ptu.from_numpy(normalize(obs_unnormalized,obs_mean, obs_std)) # TODO(Q1)
         acs_normalized = ptu.from_numpy(normalize(acs_unnormalized,acs_mean, acs_std))# TODO(Q1)
 
-        print('shape of obs',obs_normalized.shape)
-        print('shape of acs',acs_normalized.shape)
+        # print('shape of obs',obs_normalized.shape)
+        # print('shape of acs',acs_normalized.shape)
+        # shape of obs torch.Size([512, 21])
+        # shape of acs torch.Size([512, 6])
         # predicted change in obs
         concatenated_input = torch.cat([obs_normalized, acs_normalized], dim=1)
 

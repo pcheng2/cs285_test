@@ -1,7 +1,5 @@
 import numpy as np
-import os
-import sys
-sys.path.append(os.getcwd())
+
 from .base_policy import BasePolicy
 
 #No CEM applied, just through random shotting method

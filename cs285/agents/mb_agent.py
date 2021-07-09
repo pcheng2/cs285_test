@@ -1,11 +1,8 @@
 from .base_agent import BaseAgent
-from models.ff_model import FFModel
-from policies.MPC_policy import MPCPolicy
-from infrastructure.replay_buffer import ReplayBuffer
-from infrastructure.utils import *
-import os
-import sys
-sys.path.append(os.getcwd())
+from cs285.models.ff_model import FFModel
+from cs285.policies.MPC_policy import MPCPolicy
+from cs285.infrastructure.replay_buffer import ReplayBuffer
+from cs285.infrastructure.utils import *
 class MBAgent(BaseAgent):
     def __init__(self, env, agent_params):
         super(MBAgent, self).__init__()

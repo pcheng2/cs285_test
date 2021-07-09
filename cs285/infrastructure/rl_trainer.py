@@ -4,19 +4,18 @@ import os
 import sys
 import time
 
-sys.path.append(os.getcwd())
 import gym
 from gym import wrappers
 import numpy as np
 import torch
 
-from agents.mb_agent import MBAgent
-from infrastructure import pytorch_util as ptu
-from infrastructure import utils
-from infrastructure.logger import Logger
+from cs285.agents.mb_agent import MBAgent
+from cs285.infrastructure import pytorch_util as ptu
+from cs285.infrastructure import utils
+from cs285.infrastructure.logger import Logger
 
 # register all of our envs
-from envs import register_envs
+from cs285.envs import register_envs
 
 register_envs()
 
@@ -148,7 +147,7 @@ class RL_Trainer(object):
                 self.collect_training_trajectories(
                     itr, initial_expertdata, collect_policy, use_batchsize)
             )
-
+            print('pathis', len(paths))
             self.total_envsteps += envsteps_this_batch
 
             # add collected data to replay buffer
@@ -190,12 +189,25 @@ class RL_Trainer(object):
             train_video_paths: paths which also contain videos for visualization purposes
         """
         # TODO: get this from Piazza
-        train_video_paths = False
-        envsteps_this_batch = 0
-        paths = []
-        for _ in itr:
-            path = collect_policy.sample(num_transitions_to_sample)
-            paths.append(path)
+        if itr == 0:
+            if initial_expertdata is not None:
+                paths = pickle.load(open(self.params['expert_data'], 'rb'))
+                return paths, 0, None
+            if save_expert_data_to_disk:
+                num_transitions_to_sample = self.params['batch_size_initial']
+        print("\nCollecting data to be used for training...")
+        paths, envsteps_this_batch = utils.sample_trajectories(self.env, collect_policy, num_transitions_to_sample, self.params['ep_len'])
+
+        # collect more rollouts with the same policy, to be saved as videos in tensorboard
+        train_video_paths = None
+        if self.logvideo:
+            print('\nCollecting train rollouts to be used for saving videos...')
+            train_video_paths = utils.sample_n_trajectories(self.env, collect_policy, MAX_NVIDEO, MAX_VIDEO_LEN, True)
+
+        if save_expert_data_to_disk and itr == 0:
+            with open('expert_data_{}.pkl'.format(self.params['env_name']), 'wb') as file:
+                pickle.dump(paths, file)
+
         return paths, envsteps_this_batch, train_video_paths
 
     def train_agent(self):

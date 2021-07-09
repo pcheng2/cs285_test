@@ -1,7 +1,4 @@
-import os
-import sys
-sys.path.append(os.getcwd())
-from infrastructure.utils import *
+from cs285.infrastructure.utils import *
 
 
 class ReplayBuffer(object):
